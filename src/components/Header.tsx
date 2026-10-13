@@ -31,7 +31,7 @@ export const Header: React.FC<HeaderProps> = ({
 
   return (
     <header className="sticky top-0 z-40 w-full bg-[#171717]/95 backdrop-blur-md border-b border-neutral-800 shadow-lg text-white">
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 h-18 flex items-center justify-between">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 min-h-[4.5rem] py-2.5 flex items-center justify-between">
         
         {/* Brand Wordmark & Location Badge: [C logo]  C Taxi  [COIMBATORE] */}
         <button 

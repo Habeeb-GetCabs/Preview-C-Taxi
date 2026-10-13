@@ -28,9 +28,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
   }[size];
 
   const badgeClasses = {
-    sm: 'text-[9px] px-1.5 py-0.5 tracking-wider',
-    md: 'text-[10px] px-2 py-0.5 tracking-wider',
-    lg: 'text-xs px-2.5 py-1 tracking-wider'
+    sm: 'text-[8px] sm:text-[9px] px-1.5 py-0.5 tracking-wider',
+    md: 'text-[9px] sm:text-[10px] px-2 py-0.5 tracking-wider',
+    lg: 'text-[10px] sm:text-xs px-2.5 py-0.5 tracking-wider'
   }[size];
 
   return (
@@ -42,9 +42,9 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
         C
       </span>
 
-      <div className="flex flex-col justify-center">
-        {/* Intended visual hierarchy: [C logo]  C Taxi  [COIMBATORE] */}
-        <div className="flex items-center gap-2 flex-wrap leading-none">
+      <div className="flex flex-col justify-center text-left">
+        {/* Line 1: Unmistakable Primary Brand Name "C Taxi" */}
+        <div className="flex items-center leading-none">
           <span
             className={`font-heading font-extrabold tracking-tight ${brandTextClasses} ${
               lightBackground ? 'text-[#171717]' : 'text-white'
@@ -52,9 +52,12 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           >
             C Taxi
           </span>
+        </div>
 
+        {/* Line 2: Visually Secondary Location Badge "COIMBATORE" directly BELOW "C Taxi" */}
+        <div className="mt-1 flex items-center">
           <span
-            className={`${badgeClasses} font-bold rounded uppercase shrink-0 transition-colors ${
+            className={`${badgeClasses} font-bold rounded uppercase shrink-0 transition-colors inline-block leading-none ${
               lightBackground
                 ? 'bg-[#171717] text-[#FFBF00] border border-[#171717]'
                 : 'text-[#FFBF00] bg-[#FFBF00]/15 border border-[#FFBF00]/30'
@@ -64,10 +67,11 @@ export const BrandLogo: React.FC<BrandLogoProps> = ({
           </span>
         </div>
 
+        {/* Line 3: Service tagline below location badge */}
         {showSubtitle && (
-          <span className="text-[11px] text-[#A0A09C] font-medium tracking-wide mt-1 flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
-            {subtitleText}
+          <span className="text-[10px] sm:text-[11px] text-[#A0A09C] font-medium tracking-wide mt-1 flex items-center gap-1.5 leading-none">
+            <span className="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse shrink-0" />
+            <span>{subtitleText}</span>
           </span>
         )}
       </div>
