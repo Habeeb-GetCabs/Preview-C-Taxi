@@ -9,9 +9,9 @@ interface FleetSectionProps {
 }
 
 const FLEET_PHOTOS: Record<string, string> = {
-  'sedan': assetUrl('/images/fleet/fleet-prime-sedan.webp'),
-  'suv_ertiga': assetUrl('/images/fleet/fleet-family-suv.webp'),
-  'premium_suv': assetUrl('/images/fleet/fleet-innova-crysta.webp')
+  'sedan': '/images/fleet/fleet-prime-sedan.webp',
+  'suv_ertiga': '/images/fleet/fleet-family-suv.webp',
+  'premium_suv': '/images/fleet/fleet-innova-crysta.webp'
 };
 
 export const FleetSection: React.FC<FleetSectionProps> = ({ onSelectFleet, onNavigateToBooking }) => {
@@ -41,7 +41,10 @@ export const FleetSection: React.FC<FleetSectionProps> = ({ onSelectFleet, onNav
         {/* 3 Fleet Categories */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
           {VEHICLE_FLEET.map((vehicle) => {
-            const photo = FLEET_PHOTOS[vehicle.id] || FLEET_PHOTOS['sedan'];
+            const photoPath = FLEET_PHOTOS[vehicle.id] || FLEET_PHOTOS['sedan'];
+            const jpgFallback = vehicle.id === 'sedan' ? '/images/fleet/dzire-sedan.jpg' :
+                              vehicle.id === 'suv_ertiga' ? '/images/fleet/ertiga-suv.jpg' :
+                              '/images/fleet/innova-crysta.jpg';
             return (
               <div
                 key={vehicle.id}
@@ -52,11 +55,16 @@ export const FleetSection: React.FC<FleetSectionProps> = ({ onSelectFleet, onNav
                   {/* Photo Header */}
                   <div className="relative h-44 w-full overflow-hidden">
                     <img 
-                      src={photo} 
+                      src={assetUrl(photoPath)} 
                       alt={vehicle.name} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       loading="lazy"
-                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.includes('.jpg')) {
+                          target.src = assetUrl(jpgFallback);
+                        }
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                     

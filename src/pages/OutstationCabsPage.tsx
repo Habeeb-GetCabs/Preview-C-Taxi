@@ -531,7 +531,12 @@ export const OutstationCabsPage: React.FC<OutstationCabsPageProps> = ({ onOpenBo
                       alt={card.name} 
                       className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                       loading="lazy"
-                      referrerPolicy="no-referrer"
+                      onError={(e) => {
+                        const target = e.currentTarget;
+                        if (!target.src.includes('.jpg')) {
+                          target.src = assetUrl('/images/destinations/ooty-lake.jpg');
+                        }
+                      }}
                     />
                     <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/30 to-transparent" />
                     

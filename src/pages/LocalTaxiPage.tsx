@@ -196,7 +196,12 @@ export const LocalTaxiPage: React.FC<LocalTaxiPageProps> = ({ onOpenBookingModal
                   alt="C Taxi premium commercial AC city taxi fleet in Coimbatore"
                   className="w-full h-full object-cover"
                   loading="eager"
-                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('.jpg')) {
+                      target.src = assetUrl('/images/fleet/coimbatore-city-taxi.jpg');
+                    }
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/85 via-black/45 to-transparent flex items-center px-4 sm:px-5">
                   <div className="text-white space-y-0.5">

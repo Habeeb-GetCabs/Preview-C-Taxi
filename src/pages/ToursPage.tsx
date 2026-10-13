@@ -121,7 +121,12 @@ export const ToursPage: React.FC<ToursPageProps> = ({
                     alt="Nilgiri tea plantations, misty valleys, and mountain roads near Coonoor and Ooty"
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
                     loading="eager"
-                    referrerPolicy="no-referrer"
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes('.jpg')) {
+                        target.src = assetUrl('/images/destinations/coonoor.jpg');
+                      }
+                    }}
                   />
                   <div className="absolute inset-0 bg-gradient-to-t from-black/90 via-black/25 to-transparent" />
                   

@@ -80,8 +80,14 @@ export const TourCardVisual: React.FC<TourCardVisualProps> = ({ slug, title, bad
           alt={photoData.alt || title}
           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-700"
           loading="lazy"
-          referrerPolicy="no-referrer"
-          onError={() => setImageError(true)}
+          onError={(e) => {
+            const target = e.currentTarget;
+            if (!target.src.includes('.jpg')) {
+              target.src = assetUrl('/images/destinations/ooty-lake.jpg');
+            } else {
+              setImageError(true);
+            }
+          }}
         />
       ) : (
         <div className="w-full h-full bg-gradient-to-br from-neutral-800 via-neutral-900 to-black flex items-center justify-center p-6 text-center">

@@ -255,7 +255,12 @@ export const TourDetailPage: React.FC<TourDetailPageProps> = ({
                           alt={photo.name}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                           loading="lazy"
-                          referrerPolicy="no-referrer"
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.src.includes('.jpg')) {
+                              target.src = assetUrl('/images/destinations/ooty-lake.jpg');
+                            }
+                          }}
                         />
                         <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
                         <span className="absolute top-2 left-2 text-[10px] font-bold text-[#171717] bg-[#FFBF00] px-2 py-0.5 rounded shadow-xs">

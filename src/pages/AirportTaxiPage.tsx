@@ -170,7 +170,12 @@ export const AirportTaxiPage: React.FC<AirportTaxiPageProps> = ({ onOpenBookingM
                   alt="Coimbatore International Airport terminal transfers and pickups"
                   className="w-full h-full object-cover"
                   loading="eager"
-                  referrerPolicy="no-referrer"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes('.jpg')) {
+                      target.src = assetUrl('/images/destinations/cjb-airport-terminal.jpg');
+                    }
+                  }}
                 />
                 <div className="absolute inset-0 bg-gradient-to-r from-black/80 via-black/40 to-transparent flex items-center px-4">
                   <div className="text-white space-y-0.5">
@@ -395,7 +400,12 @@ export const AirportTaxiPage: React.FC<AirportTaxiPageProps> = ({ onOpenBookingM
                 alt="Coimbatore International Airport terminal road and taxi pickup lane"
                 className="w-full h-full object-cover"
                 loading="lazy"
-                referrerPolicy="no-referrer"
+                onError={(e) => {
+                  const target = e.currentTarget;
+                  if (!target.src.includes('.jpg')) {
+                    target.src = assetUrl('/images/destinations/cjb-airport-road.jpg');
+                  }
+                }}
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent flex items-end p-4">
                 <span className="text-[11px] font-bold text-[#FFBF00] bg-[#171717]/90 px-2.5 py-1 rounded-md border border-[#FFBF00]/30">
