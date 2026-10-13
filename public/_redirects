@@ -1,2 +1,10 @@
-# SPA routing rewrite rule for Cloudflare Pages
+# Cloudflare Pages SPA Routing Rules
+# Explicitly pass through static asset directories and files
+/assets/* /assets/:splat 200
+/images/* /images/:splat 200
+/robots.txt /robots.txt 200
+/sitemap.xml /sitemap.xml 200
+/CNAME /CNAME 200
+
+# Catch-all rewrite for SPA client-side routes
 /* /index.html 200
