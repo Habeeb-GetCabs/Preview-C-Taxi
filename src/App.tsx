@@ -28,7 +28,7 @@ import { ToursPage } from './pages/ToursPage';
 import { TOUR_PACKAGES, TourPackage } from './data/toursData';
 import { trackPageView, setupLinkClickTracking } from './utils/googleAds';
 
-export type AppRoute = 'home' | 'local-taxi' | 'outstation-cabs' | 'airport-taxi' | 'tours' | 'tour-detail';
+export type AppRoute = 'home' | 'local-taxi' | 'outstation-cabs' | 'airport-taxi' | 'tours' | 'tour-detail' | 'not-found';
 
 const PAGE_META: Record<string, { title: string; desc: string }> = {
   'home': {
@@ -50,6 +50,10 @@ const PAGE_META: Record<string, { title: string; desc: string }> = {
   'tours': {
     title: 'Coimbatore Sightseeing Tours & Holiday Packages | C Taxi',
     desc: 'Explore Ooty, Coonoor, Isha Yoga Adiyogi, Palani, Valparai & Kodaikanal tour packages from Coimbatore. Dedicated AC vehicles, fuel & mountain certified chauffeurs included.'
+  },
+  'not-found': {
+    title: 'Page Not Found (404) | C Taxi Coimbatore',
+    desc: 'The requested page could not be found. Contact C Taxi 24/7 at 9089223344 for cabs in Coimbatore.'
   }
 };
 
@@ -164,8 +168,10 @@ export default function App() {
         resolvedRoute = 'airport-taxi';
       } else if (isTours) {
         resolvedRoute = 'tours';
-      } else {
+      } else if (candidate === '/' || candidate === '' || candidate === '/home') {
         resolvedRoute = 'home';
+      } else {
+        resolvedRoute = 'not-found';
       }
 
       setCurrentRoute(resolvedRoute);
@@ -413,6 +419,52 @@ export default function App() {
             {/* 8. Useful FAQs */}
             <FaqSection />
           </>
+        )}
+
+        {/* Route 7: Page Not Found (404) — Never silently map unknown URLs to unrelated pages */}
+        {currentRoute === 'not-found' && (
+          <section className="py-20 bg-[#171717] min-h-[60vh] flex items-center justify-center text-white">
+            <div className="max-w-xl mx-auto px-4 text-center space-y-6">
+              <div className="w-16 h-16 rounded-2xl bg-[#FFBF00]/10 border border-[#FFBF00]/30 text-[#FFBF00] flex items-center justify-center mx-auto text-3xl font-extrabold font-heading">
+                404
+              </div>
+              <h1 className="text-3xl sm:text-4xl font-extrabold font-heading tracking-tight text-white">
+                Page Not Found (404)
+              </h1>
+              <p className="text-[#A0A09C] text-sm sm:text-base leading-relaxed">
+                The requested page does not exist or has moved. Browse our 24/7 Coimbatore cab services or return to the homepage.
+              </p>
+              <div className="flex flex-wrap items-center justify-center gap-3 pt-2">
+                <button
+                  type="button"
+                  onClick={() => handleNavigate('home')}
+                  className="px-5 py-2.5 rounded-xl bg-[#FFBF00] text-[#171717] font-extrabold text-sm shadow-md hover:bg-[#E5AC00] transition-colors"
+                >
+                  Return to Homepage
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleNavigate('local-taxi')}
+                  className="px-4 py-2.5 rounded-xl bg-neutral-800 text-white font-bold text-sm border border-neutral-700 hover:border-neutral-600 transition-colors"
+                >
+                  Local Taxi
+                </button>
+                <button
+                  type="button"
+                  onClick={() => handleNavigate('outstation-cabs')}
+                  className="px-4 py-2.5 rounded-xl bg-neutral-800 text-white font-bold text-sm border border-neutral-700 hover:border-neutral-600 transition-colors"
+                >
+                  Outstation Cabs
+                </button>
+                <a
+                  href="tel:9089223344"
+                  className="px-4 py-2.5 rounded-xl bg-emerald-600 text-white font-bold text-sm shadow-md hover:bg-emerald-500 transition-colors"
+                >
+                  Call 90892 23344
+                </a>
+              </div>
+            </div>
+          </section>
         )}
 
       </main>
