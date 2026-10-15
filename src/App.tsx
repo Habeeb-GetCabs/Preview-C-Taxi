@@ -81,43 +81,88 @@ export default function App() {
   // Synchronize route based on URL path or search parameters
   const syncRouteFromUrl = () => {
     try {
-      const pathname = window.location.pathname.toLowerCase().replace(/\/$/, '') || '/';
+      // Normalize pathname
+      let pathname = window.location.pathname.toLowerCase().trim();
+      pathname = pathname.replace(/\/+$/, '') || '/';
+      
       const searchParams = new URLSearchParams(window.location.search);
-      const pageParam = searchParams.get('page')?.toLowerCase();
-      const tourParam = searchParams.get('tour');
+      const pageParam = (searchParams.get('page') || '').toLowerCase().trim().replace(/\/+$/, '');
+      const serviceParam = (searchParams.get('service') || '').toLowerCase().trim();
+      const tourParam = (searchParams.get('tour') || '').toLowerCase().trim();
 
-      // 1. Direct Tour Detail Page Check
+      // Check candidate path
+      const candidate = pageParam ? (pageParam.startsWith('/') ? pageParam : `/${pageParam}`) : pathname;
+
+      // 1. Tour Detail Page Check
+      let targetTourSlug: string | null = null;
       if (tourParam) {
-        const found = TOUR_PACKAGES.find(t => t.slug === tourParam);
-        if (found) {
+        targetTourSlug = tourParam;
+      } else if (candidate.startsWith('/tour/') || candidate.startsWith('/tours/')) {
+        targetTourSlug = candidate.replace('/tours/', '').replace('/tour/', '').replace(/\/$/, '');
+      }
+
+      if (targetTourSlug) {
+        // Match exact slug or fuzzy alias (e.g. 'ooty' -> 'ooty-coonoor-kotagiri')
+        const foundTour = TOUR_PACKAGES.find(t => 
+          t.slug === targetTourSlug || 
+          t.slug.includes(targetTourSlug!) || 
+          targetTourSlug!.includes(t.slug)
+        );
+
+        if (foundTour) {
           setCurrentRoute('tour-detail');
-          setActiveTourSlug(found.slug);
-          updateHeadTags(found.pageTitle, found.metaDescription);
+          setActiveTourSlug(foundTour.slug);
+          updateHeadTags(foundTour.pageTitle, foundTour.metaDescription);
           return;
-        }
-      } else if (pathname.startsWith('/tour/') || pathname.startsWith('/tours/')) {
-        const slug = pathname.replace('/tours/', '').replace('/tour/', '');
-        if (slug) {
-          const found = TOUR_PACKAGES.find(t => t.slug === slug);
-          if (found) {
-            setCurrentRoute('tour-detail');
-            setActiveTourSlug(found.slug);
-            updateHeadTags(found.pageTitle, found.metaDescription);
-            return;
-          }
+        } else {
+          // Gracefully fallback to Tours Hub if specific tour slug doesn't match
+          setCurrentRoute('tours');
+          setActiveTourSlug(null);
+          updateHeadTags(PAGE_META['tours'].title, PAGE_META['tours'].desc);
+          return;
         }
       }
 
-      // 2. Dedicated Service Pages Check
+      // 2. Dedicated Service Pages & Google Ads Landing Aliases Check
       let resolvedRoute: AppRoute = 'home';
 
-      if (pathname === '/local-taxi' || pageParam === 'local-taxi' || searchParams.get('service') === 'local') {
-        resolvedRoute = 'local-taxi';
-      } else if (pathname === '/outstation-cabs' || pathname === '/outstation' || pageParam === 'outstation-cabs' || searchParams.get('service') === 'outstation') {
+      // Outstation & One-Way Taxi aliases (e.g. /one-way-taxi, /outstation-cabs, /outstation)
+      const isOutstation = [
+        '/outstation-cabs', '/outstation', '/one-way-taxi', '/oneway-taxi',
+        '/one-way-cabs', '/oneway-cabs', '/outstation-taxi', '/outstation-cab',
+        '/oneway', '/one-way'
+      ].includes(candidate) ||
+      ['outstation-cabs', 'outstation', 'one-way-taxi', 'oneway-taxi', 'oneway', 'one-way'].includes(pageParam) ||
+      ['outstation', 'oneway', 'one-way'].includes(serviceParam);
+
+      // Local Taxi aliases (e.g. /local-taxi, /call-taxi, /city-taxi)
+      const isLocal = [
+        '/local-taxi', '/local', '/call-taxi', '/city-taxi', '/local-cabs', '/local-cab'
+      ].includes(candidate) ||
+      ['local-taxi', 'local', 'call-taxi', 'city-taxi'].includes(pageParam) ||
+      ['local', 'call-taxi', 'city'].includes(serviceParam);
+
+      // Airport Taxi aliases (e.g. /airport-taxi, /airport, /cjb-airport)
+      const isAirport = [
+        '/airport-taxi', '/airport', '/airport-cabs', '/cjb-airport', '/cjb-airport-taxi', '/airport-cab'
+      ].includes(candidate) ||
+      ['airport-taxi', 'airport', 'airport-cabs', 'cjb-airport'].includes(pageParam) ||
+      ['airport', 'cjb'].includes(serviceParam);
+
+      // Tours Hub aliases (e.g. /tours, /tour, /tour-packages)
+      const isTours = [
+        '/tours', '/tour', '/tour-packages', '/packages', '/holiday-packages'
+      ].includes(candidate) ||
+      ['tours', 'tour', 'tour-packages', 'packages'].includes(pageParam) ||
+      ['tours', 'tour', 'packages'].includes(serviceParam);
+
+      if (isOutstation) {
         resolvedRoute = 'outstation-cabs';
-      } else if (pathname === '/airport-taxi' || pathname === '/airport' || pageParam === 'airport-taxi' || searchParams.get('service') === 'airport') {
+      } else if (isLocal) {
+        resolvedRoute = 'local-taxi';
+      } else if (isAirport) {
         resolvedRoute = 'airport-taxi';
-      } else if (pathname === '/tours' || pageParam === 'tours' || searchParams.get('service') === 'tours') {
+      } else if (isTours) {
         resolvedRoute = 'tours';
       } else {
         resolvedRoute = 'home';
@@ -128,13 +173,21 @@ export default function App() {
       const meta = PAGE_META[resolvedRoute] || PAGE_META['home'];
       updateHeadTags(meta.title, meta.desc);
     } catch {
-      // Graceful fallback
+      // Defensive fallback to home on unexpected parsing failure
+      setCurrentRoute('home');
+      setActiveTourSlug(null);
+      updateHeadTags(PAGE_META['home'].title, PAGE_META['home'].desc);
     }
   };
 
   useEffect(() => {
     syncRouteFromUrl();
-    const cleanupClickTracking = setupLinkClickTracking();
+    let cleanupClickTracking: (() => void) | undefined;
+    try {
+      cleanupClickTracking = setupLinkClickTracking();
+    } catch {
+      // Safe non-blocking telemetry initialization
+    }
     window.addEventListener('popstate', syncRouteFromUrl);
     return () => {
       window.removeEventListener('popstate', syncRouteFromUrl);
@@ -143,8 +196,12 @@ export default function App() {
   }, []);
 
   useEffect(() => {
-    const path = currentRoute === 'home' ? '/' : `/${currentRoute}`;
-    trackPageView(path);
+    try {
+      const path = currentRoute === 'home' ? '/' : `/${currentRoute}`;
+      trackPageView(path);
+    } catch {
+      // Suppress analytics error
+    }
   }, [currentRoute, activeTourSlug]);
 
   // Programmatic navigation that updates history and state smoothly
@@ -160,22 +217,22 @@ export default function App() {
       if (found) {
         updateHeadTags(found.pageTitle, found.metaDescription);
       }
-    } else if (route === 'local-taxi') {
+    } else if (route === 'local-taxi' || route === 'local' || route === 'call-taxi') {
       targetRoute = 'local-taxi';
       targetUrl = '/local-taxi/';
       setActiveTourSlug(null);
       updateHeadTags(PAGE_META['local-taxi'].title, PAGE_META['local-taxi'].desc);
-    } else if (route === 'outstation-cabs') {
+    } else if (route === 'outstation-cabs' || route === 'outstation' || route === 'one-way-taxi' || route === 'oneway') {
       targetRoute = 'outstation-cabs';
       targetUrl = '/outstation-cabs/';
       setActiveTourSlug(null);
       updateHeadTags(PAGE_META['outstation-cabs'].title, PAGE_META['outstation-cabs'].desc);
-    } else if (route === 'airport-taxi') {
+    } else if (route === 'airport-taxi' || route === 'airport') {
       targetRoute = 'airport-taxi';
       targetUrl = '/airport-taxi/';
       setActiveTourSlug(null);
       updateHeadTags(PAGE_META['airport-taxi'].title, PAGE_META['airport-taxi'].desc);
-    } else if (route === 'tours') {
+    } else if (route === 'tours' || route === 'tour') {
       targetRoute = 'tours';
       targetUrl = '/tours/';
       setActiveTourSlug(null);
@@ -205,7 +262,11 @@ export default function App() {
       }
     }
 
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    try {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    } catch {
+      window.scrollTo(0, 0);
+    }
   };
 
   const handleOpenBookingModal = (details: any) => {
@@ -287,13 +348,21 @@ export default function App() {
         )}
 
         {/* Route 5: Dedicated Tour Detail Page (e.g. Ooty, Isha, Palani) */}
-        {currentRoute === 'tour-detail' && activeTour && (
-          <TourDetailPage
-            tour={activeTour}
-            onBackToHome={() => handleNavigate('tours')}
-            onNavigateToTour={(slug) => handleNavigate('tour-detail', slug)}
-            onOpenBookingModal={handleOpenBookingModal}
-          />
+        {currentRoute === 'tour-detail' && (
+          activeTour ? (
+            <TourDetailPage
+              tour={activeTour}
+              onBackToHome={() => handleNavigate('tours')}
+              onNavigateToTour={(slug) => handleNavigate('tour-detail', slug)}
+              onOpenBookingModal={handleOpenBookingModal}
+            />
+          ) : (
+            <ToursPage 
+              onNavigateToTour={(slug) => handleNavigate('tour-detail', slug)}
+              onBookTour={handleBookTourFromCard}
+              onNavigate={handleNavigate}
+            />
+          )
         )}
 
         {/* Route 6: Homepage (Default) */}

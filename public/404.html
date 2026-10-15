@@ -3,6 +3,14 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    
+    <!-- Favicon & Brand Icons -->
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+    <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+    <link rel="shortcut icon" href="/favicon.ico" />
+    <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+
     <title>C Taxi · Coimbatore – 24/7 Call Taxi, Airport Transfer &amp; Outstation Cabs</title>
     <meta
       name="description"
@@ -10,37 +18,61 @@
     />
     <link rel="canonical" href="https://www.ctaxicab.com/" />
     
-    <!-- OpenGraph Social Tags -->
-    <meta property="og:title" content="C Taxi · Coimbatore – 24/7 Call Taxi, Airport Transfers &amp; Outstation Cabs" />
-    <meta
-      property="og:description"
-      content="Fastest 15-min doorstep pickup across Coimbatore. Local rides, CJB airport transfers, Ooty trips from ₹3,000 &amp; outstation rides. Call 9089223344."
-    />
-    <meta property="og:url" content="https://www.ctaxicab.com/" />
-    <meta property="og:type" content="website" />
-    <meta property="og:site_name" content="C Taxi" />
-    <meta property="og:image" content="https://www.ctaxicab.com/images/seo/ctaxi-og-banner.webp" />
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Outfit:wght@500;600;700;800&amp;family=Plus+Jakarta+Sans:wght@400;500;600;700&amp;display=swap"
-      rel="stylesheet"
-    />
-    
+    <!-- Search Engine & Google Ads Crawler Directives -->
+    <meta name="robots" content="index, follow" />
+    <meta name="googlebot" content="index, follow" />
+    <meta name="AdsBot-Google" content="index, follow" />
+    <meta name="AdsBot-Google-Mobile" content="index, follow" />
+
     <!-- Google tag (gtag.js) - Official Google Ads Tag AW-333870129 -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-333870129"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
-
       gtag('config', 'AW-333870129');
     </script>
+
+    <!-- SPA Fallback Redirect for Deep Route Refreshes -->
+    <script>
+      (function() {
+        try {
+          var path = window.location.pathname;
+          var search = window.location.search;
+          var hash = window.location.hash;
+          if (path && path !== '/' && path !== '/404.html') {
+            // Forward clean path as parameter so App.tsx restores deep route
+            var redirectUrl = '/?page=' + encodeURIComponent(path.replace(/^\//, '').replace(/\/$/, '')) + (search ? '&' + search.slice(1) : '') + hash;
+            window.location.replace(redirectUrl);
+          }
+        } catch (e) {
+          window.location.replace('/');
+        }
+      })();
+    </script>
   </head>
-  <body class="bg-white text-[#171717] antialiased selection:bg-[#FFBF00] selection:text-[#171717] font-sans">
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
+  <body style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif; background-color: #171717; color: #FFFFFF; margin: 0; padding: 20px; display: flex; align-items: center; justify-content: center; min-height: 100vh;">
+    <div style="max-width: 520px; width: 100%; text-align: center; background: #222222; border: 1px solid #333333; border-radius: 16px; padding: 32px 24px; box-shadow: 0 10px 25px rgba(0,0,0,0.5);">
+      <div style="display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; background-color: #FFBF00; color: #171717; font-size: 28px; font-weight: 800; border-radius: 14px; margin-bottom: 16px;">
+        C
+      </div>
+      <h1 style="font-size: 22px; font-weight: 800; margin: 0 0 8px 0; color: #FFFFFF;">
+        C Taxi · Coimbatore 24/7 Call Taxi
+      </h1>
+      <p style="font-size: 14px; color: #D5CEBE; margin: 0 0 24px 0; line-height: 1.5;">
+        Instant doorstep AC cabs across Kovai in 15 mins. Ooty trips from ₹3,000 &amp; outstation cabs from ₹15/km.
+      </p>
+      <div style="display: flex; flex-direction: column; gap: 12px;">
+        <a href="tel:9089223344" style="display: block; width: 100%; padding: 14px 20px; background-color: #FFBF00; color: #171717; text-decoration: none; font-weight: 800; font-size: 15px; border-radius: 12px; box-sizing: border-box;">
+          Call Central Desk: +91 90892 23344
+        </a>
+        <a href="https://wa.me/919089223344?text=Hello%20C%20Taxi%2C%20I%20need%20a%20cab%20in%20Coimbatore" style="display: block; width: 100%; padding: 14px 20px; background-color: #25D366; color: #FFFFFF; text-decoration: none; font-weight: 700; font-size: 15px; border-radius: 12px; box-sizing: border-box;">
+          Book on WhatsApp
+        </a>
+        <a href="/" style="display: block; width: 100%; padding: 12px 20px; background-color: #333333; color: #FFFFFF; text-decoration: none; font-weight: 600; font-size: 13px; border-radius: 12px; box-sizing: border-box;">
+          Return to C Taxi Home
+        </a>
+      </div>
+    </div>
   </body>
 </html>

@@ -111,27 +111,7 @@ export const Footer: React.FC<FooterProps> = ({ onNavigate, onOpenPolicy }) => {
                   <span>Terms & Conditions of Service</span>
                 </button>
               </li>
-              <li className="pt-2">
-                <a
-                  href="/sitemap.xml"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-[#FFBF00] transition-colors text-neutral-400 inline-flex items-center gap-1"
-                >
-                  <span>Sitemap XML (Search Index)</span>
-                  <span className="text-[10px] text-[#FFBF00] font-mono">↗</span>
-                </a>
-              </li>
-              <li>
-                <a
-                  href="/robots.txt"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-[#FFBF00] transition-colors text-neutral-500 inline-flex items-center gap-1"
-                >
-                  <span>Robots.txt Indexing Directive</span>
-                </a>
-              </li>
+
             </ul>
           </div>
 
