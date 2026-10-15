@@ -36,6 +36,14 @@ const routes = [
     tariff: 'Outstation Sedan: ₹15/km (min 130 km) | SUV: ₹22/km (min 130 km) | Ooty from ₹3,000'
   },
   {
+    path: 'red-taxi',
+    title: 'Coimbatore Call Taxi Service — 24/7 Doorstep Pickup | C Taxi',
+    desc: 'Reliable 24/7 call taxi in Coimbatore. Fast 10-15 min doorstep pickup across Gandhipuram, RS Puram, Peelamedu & Kovai. Clean AC cabs, zero surge pricing. Call 9089223344.',
+    h1: 'Coimbatore 24/7 Call Taxi Service — Doorstep Pickup Across Kovai',
+    subtitle: 'Fast, dependable local taxi transfers across Coimbatore. Prompt 10-15 minute dispatch, transparent metered fares, and clean AC sedans and SUVs.',
+    tariff: 'Local Sedan: ₹100 Base + ₹30/km | Hourly Packages from ₹350/hr'
+  },
+  {
     path: 'airport-taxi',
     title: 'Coimbatore Airport Taxi (CJB) — 24/7 Terminal Pickup & Drop | C Taxi',
     desc: 'Punctual Coimbatore International Airport (CJB) taxi transfers with flight tracking and zero delay waiting charges. Clean AC cabs with large luggage boots. Call 9089223344.',
@@ -84,8 +92,15 @@ routes.forEach(r => {
     `<p class="text-sm sm:text-base lg:text-lg text-[#D5CEBE] max-w-2xl leading-relaxed">${r.subtitle}</p>`
   );
 
+  // Write both trailing slash directory index.html and root-level .html
+  // This guarantees Cloudflare Pages serves BOTH /slug and /slug/ with HTTP 200 OK without any 308 redirect
   fs.writeFileSync(path.join(targetDir, 'index.html'), html, 'utf8');
-  console.log(`Generated prerendered HTML: ${r.path}/index.html`);
+  if (!r.path.includes('/')) {
+    fs.writeFileSync(path.join(distDir, `${r.path}.html`), html, 'utf8');
+    console.log(`Generated prerendered HTML: ${r.path}/index.html and ${r.path}.html`);
+  } else {
+    console.log(`Generated prerendered HTML: ${r.path}/index.html`);
+  }
 });
 
 console.log('Prerender build completed successfully.');

@@ -139,12 +139,12 @@ export default function App() {
       ['outstation-cabs', 'outstation', 'one-way-taxi', 'oneway-taxi', 'oneway', 'one-way'].includes(pageParam) ||
       ['outstation', 'oneway', 'one-way'].includes(serviceParam);
 
-      // Local Taxi aliases (e.g. /local-taxi, /call-taxi, /city-taxi)
+      // Local Taxi aliases (e.g. /local-taxi, /call-taxi, /city-taxi, /red-taxi)
       const isLocal = [
-        '/local-taxi', '/local', '/call-taxi', '/city-taxi', '/local-cabs', '/local-cab'
+        '/local-taxi', '/local', '/call-taxi', '/city-taxi', '/local-cabs', '/local-cab', '/red-taxi'
       ].includes(candidate) ||
-      ['local-taxi', 'local', 'call-taxi', 'city-taxi'].includes(pageParam) ||
-      ['local', 'call-taxi', 'city'].includes(serviceParam);
+      ['local-taxi', 'local', 'call-taxi', 'city-taxi', 'red-taxi'].includes(pageParam) ||
+      ['local', 'call-taxi', 'city', 'red-taxi'].includes(serviceParam);
 
       // Airport Taxi aliases (e.g. /airport-taxi, /airport, /cjb-airport)
       const isAirport = [
